@@ -19,27 +19,43 @@ public class Ninja extends Actor
     public void act()
     {
         // Add your action code here.
+        playerMovement();
         
-        if (Greenfoot.isKeyDown("w"))
+    }
+    
+    public void playerMovement()
+    {
+        boolean up = Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("W") || Greenfoot.isKeyDown("up");
+        boolean down = Greenfoot.isKeyDown("s") || Greenfoot.isKeyDown("S") || Greenfoot.isKeyDown("down");
+        boolean left = Greenfoot.isKeyDown("a") || Greenfoot.isKeyDown("A") || Greenfoot.isKeyDown("left");
+        boolean right = Greenfoot.isKeyDown("d") || Greenfoot.isKeyDown("D") || Greenfoot.isKeyDown("right");
+        
+        if (!up && !down && !left && !right)
         {
-            
+            dx = 0; dy = 0;
+        }
+        
+        if (up)
+        {
             dy = -speed;
         }
-        if (Greenfoot.isKeyDown("s"))
+        if (down)
         {
             
             dy = speed;
         }
-        if (Greenfoot.isKeyDown("a"))
+        if (left)
         {
             dx = -speed;
             
         }
-        if (Greenfoot.isKeyDown("d"))
+        if (right)
         {
             dx = speed;
             
         }
+        
+        
         
         
         setLocation(getX() + dx, getY() + dy);
