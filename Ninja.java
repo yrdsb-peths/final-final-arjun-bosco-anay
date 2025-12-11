@@ -22,25 +22,25 @@ public class Ninja extends Actor
         
         if (Greenfoot.isKeyDown("w"))
         {
-            dx = 0;
+            
             dy = -speed;
-        }else if (Greenfoot.isKeyDown("s"))
+        }
+        if (Greenfoot.isKeyDown("s"))
         {
-            dx = 0;
+            
             dy = speed;
-        }else if (Greenfoot.isKeyDown("a"))
+        }
+        if (Greenfoot.isKeyDown("a"))
         {
             dx = -speed;
-            dy = 0;
-        }else if (Greenfoot.isKeyDown("d"))
+            
+        }
+        if (Greenfoot.isKeyDown("d"))
         {
             dx = speed;
-            dy = 0;
-        }else
-        {
-            dx = 0;
-            dy = 0;
+            
         }
+        
         
         setLocation(getX() + dx, getY() + dy);
     }
