@@ -37,22 +37,37 @@ public class Ninja extends Actor
         
         if (up)
         {
+            if (!left || !right)
+            {
+                dx = 0;
+            }
+            
             dy = -speed;
         }
         if (down)
         {
-            
+            if (!left || !right)
+            {
+                dx = 0;
+            }
             dy = speed;
         }
         if (left)
         {
+            if (!up || !down)
+            {
+                dy = 0;
+            }
             dx = -speed;
             
         }
         if (right)
         {
+            if (!up || !down)
+            {
+                dy = 0;
+            }
             dx = speed;
-            
         }
         
         
