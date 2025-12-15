@@ -99,29 +99,32 @@ public class Ninja extends Actor
         boolean left = Greenfoot.isKeyDown("a") || Greenfoot.isKeyDown("A") || Greenfoot.isKeyDown("left");
         boolean right = Greenfoot.isKeyDown("d") || Greenfoot.isKeyDown("D") || Greenfoot.isKeyDown("right");
         
+        dx = 0;
+        dy = 0;
+        facing = "south";
         if (up)
         {
             dy = -speed;
-            dx = 0;
+            
             facing = "north";
-        }else if (down)
+        }
+        if (down)
         {
             dy = speed;
-            dx = 0;
+            
             facing = "south";
-        }else if (left)
+        }
+        if (left)
         {
             dx = -speed;
-            dy = 0;
+            
             facing = "west";
-        }else if (right)
+        }
+        if (right)
         {
             dx = speed;
-            dy = 0;
+            
             facing = "east";
-        }else
-        {
-            dy = 0; dx = 0;
         }
         
         
