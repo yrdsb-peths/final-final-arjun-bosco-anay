@@ -24,13 +24,13 @@ public class Ninja extends Actor
     GreenfootImage[] idleWest = new GreenfootImage[2];
     
     SimpleTimer animationTimer = new SimpleTimer();
-    int imageIndex = 0;
+    
     
     public Ninja()
     {
         for (int i = 0; i < idleNorth.length; i++)
         {
-            idleNorth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
+            idleNorth[i] = new GreenfootImage("images/ninja_idle_back/idle_back" + i + ".png");
             idleNorth[i].scale(45, 60);
         }
             
@@ -42,7 +42,7 @@ public class Ninja extends Actor
          
         for (int i = 0; i < idleEast.length; i++)
         {
-            idleNorth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
+            idleNorth[i] = new GreenfootImage("images/ninja_idle_side/idle_side" + i + ".png");
             idleNorth[i].scale(45, 60);
         }   
         
@@ -53,7 +53,7 @@ public class Ninja extends Actor
         }
             
     }
-
+    int imageIndex = 0;
     public void animateNinja()
     {
         if (animationTimer.millisElapsed() < 200)
