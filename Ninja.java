@@ -28,6 +28,7 @@ public class Ninja extends Actor
     
     public Ninja()
     {
+        
         for (int i = 0; i < idleNorth.length; i++)
         {
             idleNorth[i] = new GreenfootImage("images/ninja_idle_back/idle_back" + i + ".png");
@@ -36,14 +37,14 @@ public class Ninja extends Actor
             
         for (int i = 0; i < idleSouth.length; i++)
         {
-            idleNorth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
-            idleNorth[i].scale(45, 60);
+            idleSouth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
+            idleSouth[i].scale(45, 60);
         }    
          
         for (int i = 0; i < idleEast.length; i++)
         {
-            idleNorth[i] = new GreenfootImage("images/ninja_idle_side/idle_side" + i + ".png");
-            idleNorth[i].scale(45, 60);
+            idleEast[i] = new GreenfootImage("images/ninja_idle_side/idle_side" + i + ".png");
+            idleEast[i].scale(45, 60);
         }   
         
         for (int i = 0; i < idleWest.length; i++)
@@ -51,8 +52,9 @@ public class Ninja extends Actor
             idleWest[i] = new GreenfootImage(idleEast[i]);
             idleWest[i].mirrorHorizontally();
         }
-            
+        setImage(idleSouth[1]);  
     }
+    
     int imageIndex = 0;
     public void animateNinja()
     {
@@ -61,7 +63,6 @@ public class Ninja extends Actor
             return;
         }
         animationTimer.mark();
-        
         if(facing.equals("north"))
         {
             setImage(idleNorth[imageIndex]);
@@ -101,23 +102,26 @@ public class Ninja extends Actor
         if (up)
         {
             dy = -speed;
+            dx = 0;
             facing = "north";
-        }
-        
-        if (down)
+        }else if (down)
         {
             dy = speed;
+            dx = 0;
             facing = "south";
-        }
-        if (left)
+        }else if (left)
         {
             dx = -speed;
+            dy = 0;
             facing = "west";
-        }
-        if (right)
+        }else if (right)
         {
             dx = speed;
+            dy = 0;
             facing = "east";
+        }else
+        {
+            dy = 0; dx = 0;
         }
         
         
