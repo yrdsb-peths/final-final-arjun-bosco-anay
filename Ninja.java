@@ -17,15 +17,26 @@ public class Ninja extends Actor
     int dy = 0;
     int speed = 2;
     
-    GreenfootImage[] idle = new GreenfootImage[2];
+    String facing = "south";
+    GreenfootImage[] idleNorth = new GreenfootImage[2];
+    GreenfootImage[] idleSouth = new GreenfootImage[2];
+    
     SimpleTimer animationTimer = new SimpleTimer();
     public Ninja()
     {
-        for (int i = 0; i < idle.length; i++)
-            {
-                idle[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
-                idle[i].scale(45, 60);
-            }
+        for (int i = 0; i < idleNorth.length; i++)
+        {
+            idleNorth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
+            idleNorth[i].scale(45, 60);
+        }
+            
+        for (int i = 0; i < idleNorth.length; i++)
+        {
+            idleNorth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
+            idleNorth[i].scale(45, 60);
+        }    
+            
+            
     }
     
     int imageIndex = 0;
@@ -37,9 +48,9 @@ public class Ninja extends Actor
         }
         animationTimer.mark();
         
-        setImage(idle[imageIndex]);
+        setImage(idleNorth[imageIndex]);
         
-        imageIndex = (imageIndex + 1) % idle.length;
+        imageIndex = (imageIndex + 1) % idleNorth.length;
     }
     
     public void act()
