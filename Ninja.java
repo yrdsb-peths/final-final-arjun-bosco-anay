@@ -16,10 +16,48 @@ public class Ninja extends Actor
     int dx = 0;
     int dy = 0;
     int speed = 2;
+    
+    String facing = "south";
+    GreenfootImage[] idleNorth = new GreenfootImage[2];
+    GreenfootImage[] idleSouth = new GreenfootImage[2];
+    
+    SimpleTimer animationTimer = new SimpleTimer();
+    public Ninja()
+    {
+        for (int i = 0; i < idleNorth.length; i++)
+        {
+            idleNorth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
+            idleNorth[i].scale(45, 60);
+        }
+            
+        for (int i = 0; i < idleNorth.length; i++)
+        {
+            idleNorth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
+            idleNorth[i].scale(45, 60);
+        }    
+            
+            
+    }
+    
+    int imageIndex = 0;
+    public void animateNinja()
+    {
+        if (animationTimer.millisElapsed() < 200)
+        {
+            return;
+        }
+        animationTimer.mark();
+        
+        setImage(idleNorth[imageIndex]);
+        
+        imageIndex = (imageIndex + 1) % idleNorth.length;
+    }
+    
     public void act()
     {
         // Add your action code here.
         playerMovement();
+        animateNinja();
         
     }
     
