@@ -53,15 +53,23 @@ public class Enemy extends Actor
     
     public void act()
     {
+        checkIfNinjaMoved();
         
-        followNinja();
+        if(ninjaHasMoved)
+        {
+            followNinja();
+        }
     }
     
     public void checkIfNinjaMoved()
     {
         Ninja ninja = getWorld().getObjects(Ninja.class).get(0);
         
-        if
+  
+        if (Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("a") || Greenfoot.isKeyDown("s") || Greenfoot.isKeyDown("d") || Greenfoot.isKeyDown("up") || Greenfoot.isKeyDown("down") || Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("right"))
+        {
+            ninjaHasMoved = true;
+        }
     }
     
     public void followNinja()
