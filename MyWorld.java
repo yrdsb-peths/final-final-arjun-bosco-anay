@@ -1,6 +1,7 @@
 import greenfoot.*;
 
 public class MyWorld extends World {
+    GreenfootSound bgMusic = new GreenfootSound("bgmusic.mp3");
     public MyWorld() {
         super(600, 600, 1);
         Ninja ninja = new Ninja();
@@ -8,6 +9,8 @@ public class MyWorld extends World {
         
         Enemy enemy1 = new Enemy();
         addObject(enemy1, 100, 100);
+        
+        bgMusic.playLoop();
         
     }
 }
