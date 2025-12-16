@@ -20,23 +20,39 @@ public class Ninja extends Actor
     String facing = "south";
     GreenfootImage[] idleNorth = new GreenfootImage[2];
     GreenfootImage[] idleSouth = new GreenfootImage[2];
+    GreenfootImage[] idleEast = new GreenfootImage[2];
+    GreenfootImage[] idleWest = new GreenfootImage[2];
     
     SimpleTimer animationTimer = new SimpleTimer();
+    
+    
     public Ninja()
     {
+        
         for (int i = 0; i < idleNorth.length; i++)
         {
-            idleNorth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
+            idleNorth[i] = new GreenfootImage("images/ninja_idle_back/idle_back" + i + ".png");
             idleNorth[i].scale(45, 60);
         }
             
-        for (int i = 0; i < idleNorth.length; i++)
+        for (int i = 0; i < idleSouth.length; i++)
         {
-            idleNorth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
-            idleNorth[i].scale(45, 60);
+            idleSouth[i] = new GreenfootImage("images/ninja_idle/idle" + i + ".png");
+            idleSouth[i].scale(45, 60);
         }    
-            
-            
+         
+        for (int i = 0; i < idleEast.length; i++)
+        {
+            idleEast[i] = new GreenfootImage("images/ninja_idle_side/idle_side" + i + ".png");
+            idleEast[i].scale(45, 60);
+        }   
+        
+        for (int i = 0; i < idleWest.length; i++)
+        {
+            idleWest[i] = new GreenfootImage(idleEast[i]);
+            idleWest[i].mirrorHorizontally();
+        }
+        setImage(idleSouth[1]);  
     }
     
     int imageIndex = 0;
@@ -47,8 +63,23 @@ public class Ninja extends Actor
             return;
         }
         animationTimer.mark();
+        if(facing.equals("north"))
+        {
+            setImage(idleNorth[imageIndex]);
+        } 
+        else if(facing.equals("south"))
+        {
+            setImage(idleSouth[imageIndex]);
+        }
+        else if(facing.equals("east"))
+        {
+            setImage(idleEast[imageIndex]);
+        }
+        else if(facing.equals("west"))
+        {
+            setImage(idleWest[imageIndex]);
+        }
         
-        setImage(idleNorth[imageIndex]);
         
         imageIndex = (imageIndex + 1) % idleNorth.length;
     }
@@ -68,44 +99,29 @@ public class Ninja extends Actor
         boolean left = Greenfoot.isKeyDown("a") || Greenfoot.isKeyDown("A") || Greenfoot.isKeyDown("left");
         boolean right = Greenfoot.isKeyDown("d") || Greenfoot.isKeyDown("D") || Greenfoot.isKeyDown("right");
         
-        if (!up && !down && !left && !right)
-        {
-            dx = 0; dy = 0;
-        }
-        
         if (up)
         {
-            if (!left || !right)
-            {
-                dx = 0;
-            }
-            
             dy = -speed;
-        }
-        if (down)
+            dx = 0;
+            facing = "north";
+        }else if (down)
         {
-            if (!left || !right)
-            {
-                dx = 0;
-            }
             dy = speed;
-        }
-        if (left)
+            dx = 0;
+            facing = "south";
+        }else if (left)
         {
-            if (!up || !down)
-            {
-                dy = 0;
-            }
             dx = -speed;
-            
-        }
-        if (right)
+            dy = 0;
+            facing = "west";
+        }else if (right)
         {
-            if (!up || !down)
-            {
-                dy = 0;
-            }
             dx = speed;
+            dy = 0;
+            facing = "east";
+        }else
+        {
+            dy = 0; dx = 0;
         }
         
         
