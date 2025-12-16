@@ -25,13 +25,42 @@ public class Enemy extends Actor
     {
         int x = Greenfoot.getRandomNumber(w.getWidth());
         int y = Greenfoot.getRandomNumber(w.getHeight());
+        setLocation(x, y);
     }
+    
     public void act()
     {
-        
-        
-        
-        
-        
+        followNinja();
+    }
+    
+    
+    public void followNinja()
+    {
+        if(getWorld().getObjects(Ninja.class).size() > 0)
+        {
+            Ninja ninja = getWorld().getObjects(Ninja.class).get(0);
+            
+            int dx = 0;
+            int dy = 0;
+            
+            if(getX() < ninja.getX())
+            {
+                dx = speed;
+            }
+            else if (getX() > ninja.getX())
+            {
+                dx = -speed;
+            }
+            
+            if(getY() < ninja.getY())
+            {
+                dy = speed;
+            }
+            else if (getY() > ninja.getY())
+            {
+                dy = -speed;
+            }
+            setLocation(getX() + dx, getY() + dy);
+        }
     }
 }
