@@ -15,7 +15,7 @@ public class Ninja extends Actor
     
     int dx = 0;
     int dy = 0;
-    int speed = 2;
+    int speed = 3;
     
     String facing = "south";
     GreenfootImage[] idleNorth = new GreenfootImage[2];
