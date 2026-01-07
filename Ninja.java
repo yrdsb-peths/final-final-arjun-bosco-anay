@@ -23,6 +23,8 @@ public class Ninja extends Actor
     GreenfootImage[] idleEast = new GreenfootImage[2];
     GreenfootImage[] idleWest = new GreenfootImage[2];
     
+    
+    GreenfootImage[] slashNorth = new GreenfootImage[4];
     GreenfootImage[] slashSouth = new GreenfootImage[4];
     GreenfootImage[] slashEast = new GreenfootImage[4];
     GreenfootImage[] slashWest = new GreenfootImage[4];
@@ -72,11 +74,10 @@ public class Ninja extends Actor
         }
         
         
-        
-        for (int i = 0; i < slashSouth.length; i++)
+        for (int i = 0; i < slashNorth.length; i++)
         {
-            slashSouth[i] = new GreenfootImage("images/ninja_slash_forward/slash_forward" + i + ".png");
-            slashSouth[i].scale(75, 80);
+            slashNorth[i] = new GreenfootImage("images/ninja_slash_back/slash_back" + i + ".png");
+            slashNorth[i].scale(75, 80);
         } 
         
         for (int i = 0; i < slashSouth.length; i++)
@@ -87,8 +88,14 @@ public class Ninja extends Actor
         
         for (int i = 0; i < slashSouth.length; i++)
         {
-            slashSouth[i] = new GreenfootImage("images/ninja_slash_forward/slash_forward" + i + ".png");
-            slashSouth[i].scale(75, 80);
+            slashEast[i] = new GreenfootImage("images/ninja_slash_side/slash_side" + i + ".png");
+            slashEast[i].scale(75, 55);
+        } 
+        
+        for (int i = 0; i < slashSouth.length; i++)
+        {
+            slashWest[i] = new GreenfootImage(slashEast[i]);
+            slashWest[i].mirrorHorizontally();
         } 
         
         
@@ -152,7 +159,7 @@ public class Ninja extends Actor
     {
         dx = 0;
         dy = 0;
-        facing = "south";
+        
         if (up)
         {
             dy = -speed;
@@ -208,10 +215,25 @@ public class Ninja extends Actor
             }
             slashAnimationTimer.mark();
     
-                
+              
+            if (facing.equals("north"))
+            {
+                setImage(slashNorth[slashIndex]);
+            }
+            
             if (facing.equals("south"))
             {
                 setImage(slashSouth[slashIndex]);
+            }
+            
+            if (facing.equals("east"))
+            {
+                setImage(slashEast[slashIndex]);
+            }
+            
+            if (facing.equals("west"))
+            {
+                setImage(slashWest[slashIndex]);
             }
     
             slashIndex++;
