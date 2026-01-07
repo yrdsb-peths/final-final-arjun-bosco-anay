@@ -24,6 +24,8 @@ public class Ninja extends Actor
     GreenfootImage[] idleWest = new GreenfootImage[2];
     
     GreenfootImage[] slashSouth = new GreenfootImage[4];
+    GreenfootImage[] slashEast = new GreenfootImage[4];
+    GreenfootImage[] slashWest = new GreenfootImage[4];
     
     SimpleTimer idleAnimationTimer = new SimpleTimer();
     SimpleTimer slashAnimationTimer = new SimpleTimer();
@@ -37,6 +39,10 @@ public class Ninja extends Actor
     boolean right;
     boolean space;
 
+    
+    boolean isSlashing = false;
+    SimpleTimer slashCooldownTimer = new SimpleTimer();
+    int slash_cooldown = 100;
     
     public Ninja()
     {
@@ -70,8 +76,22 @@ public class Ninja extends Actor
         for (int i = 0; i < slashSouth.length; i++)
         {
             slashSouth[i] = new GreenfootImage("images/ninja_slash_forward/slash_forward" + i + ".png");
-            slashSouth[i].scale(70, 80);
+            slashSouth[i].scale(75, 80);
         } 
+        
+        for (int i = 0; i < slashSouth.length; i++)
+        {
+            slashSouth[i] = new GreenfootImage("images/ninja_slash_forward/slash_forward" + i + ".png");
+            slashSouth[i].scale(75, 80);
+        } 
+        
+        for (int i = 0; i < slashSouth.length; i++)
+        {
+            slashSouth[i] = new GreenfootImage("images/ninja_slash_forward/slash_forward" + i + ".png");
+            slashSouth[i].scale(75, 80);
+        } 
+        
+        
         setImage(idleSouth[1]);  
     }
     
@@ -112,8 +132,11 @@ public class Ninja extends Actor
         getKeyboardInputs();
         slash();
         playerMovement();
-        animateNinja();
         
+        if (!isSlashing)
+        {   
+            animateNinja();
+        }
     }
     
     public void getKeyboardInputs()
@@ -163,28 +186,43 @@ public class Ninja extends Actor
     
     public void slash()
     {
-        if (slashAnimationTimer.millisElapsed() < 100)
+        
+
+        // Start slash ONLY if:
+        // - space is pressed
+        // - not already slashing
+        // - cooldown finished
+        if (space && !isSlashing && slashCooldownTimer.millisElapsed() >= slash_cooldown)
         {
-            return;
+            isSlashing = true;
+            slashIndex = 0;
+            slashAnimationTimer.mark();
         }
-        slashAnimationTimer.mark();
-        
-        
-        if (space)
+    
+        // If currently slashing, play animation
+        if (isSlashing)
         {
-            if(facing.equals("south"))
+            if (slashAnimationTimer.millisElapsed() < 50)
+            {
+                return;
+            }
+            slashAnimationTimer.mark();
+    
+                
+            if (facing.equals("south"))
             {
                 setImage(slashSouth[slashIndex]);
             }
+    
+            slashIndex++;
+    
+            // Animation finished
+            if (slashIndex >= slashSouth.length)
+            {
+                isSlashing = false;
+                slashCooldownTimer.mark(); // start cooldown AFTER slash ends
+            }
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        slashIndex = (slashIndex + 1) % slashSouth.length;
+
     }
 }
