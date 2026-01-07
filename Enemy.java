@@ -54,10 +54,10 @@ public class Enemy extends Actor
     public void act()
     {
         checkIfNinjaMoved();
-        
+        followNinja();
         if(ninjaHasMoved)
         {
-            followNinja();
+            
         }
     }
     

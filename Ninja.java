@@ -23,8 +23,20 @@ public class Ninja extends Actor
     GreenfootImage[] idleEast = new GreenfootImage[2];
     GreenfootImage[] idleWest = new GreenfootImage[2];
     
-    SimpleTimer animationTimer = new SimpleTimer();
+    GreenfootImage[] slashSouth = new GreenfootImage[4];
     
+    SimpleTimer idleAnimationTimer = new SimpleTimer();
+    SimpleTimer slashAnimationTimer = new SimpleTimer();
+    
+    int idleIndex = 0;
+    int slashIndex = 0;
+    
+    boolean up;
+    boolean down;
+    boolean left;
+    boolean right;
+    boolean space;
+
     
     public Ninja()
     {
@@ -52,53 +64,69 @@ public class Ninja extends Actor
             idleWest[i] = new GreenfootImage(idleEast[i]);
             idleWest[i].mirrorHorizontally();
         }
+        
+        
+        
+        for (int i = 0; i < slashSouth.length; i++)
+        {
+            slashSouth[i] = new GreenfootImage("images/ninja_slash_forward/slash_forward" + i + ".png");
+            slashSouth[i].scale(70, 80);
+        } 
         setImage(idleSouth[1]);  
     }
     
-    int imageIndex = 0;
+   
     public void animateNinja()
     {
-        if (animationTimer.millisElapsed() < 200)
+        if (idleAnimationTimer.millisElapsed() < 200)
         {
             return;
         }
-        animationTimer.mark();
+        idleAnimationTimer.mark();
         if(facing.equals("north"))
         {
-            setImage(idleNorth[imageIndex]);
+            setImage(idleNorth[idleIndex]);
         } 
         else if(facing.equals("south"))
         {
-            setImage(idleSouth[imageIndex]);
+            setImage(idleSouth[idleIndex]);
         }
         else if(facing.equals("east"))
         {
-            setImage(idleEast[imageIndex]);
+            setImage(idleEast[idleIndex]);
         }
         else if(facing.equals("west"))
         {
-            setImage(idleWest[imageIndex]);
+            setImage(idleWest[idleIndex]);
         }
         
         
-        imageIndex = (imageIndex + 1) % idleNorth.length;
+        
+        
+        idleIndex = (idleIndex + 1) % idleNorth.length;
     }
     
     public void act()
     {
         // Add your action code here.
+        getKeyboardInputs();
+        slash();
         playerMovement();
         animateNinja();
         
     }
     
+    public void getKeyboardInputs()
+    {
+        up = Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("W") || Greenfoot.isKeyDown("up");
+        down = Greenfoot.isKeyDown("s") || Greenfoot.isKeyDown("S") || Greenfoot.isKeyDown("down");
+        left = Greenfoot.isKeyDown("a") || Greenfoot.isKeyDown("A") || Greenfoot.isKeyDown("left");
+        right = Greenfoot.isKeyDown("d") || Greenfoot.isKeyDown("D") || Greenfoot.isKeyDown("right");
+        space = Greenfoot.isKeyDown("space");
+    }
+    
     public void playerMovement()
     {
-        boolean up = Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("W") || Greenfoot.isKeyDown("up");
-        boolean down = Greenfoot.isKeyDown("s") || Greenfoot.isKeyDown("S") || Greenfoot.isKeyDown("down");
-        boolean left = Greenfoot.isKeyDown("a") || Greenfoot.isKeyDown("A") || Greenfoot.isKeyDown("left");
-        boolean right = Greenfoot.isKeyDown("d") || Greenfoot.isKeyDown("D") || Greenfoot.isKeyDown("right");
-        
         dx = 0;
         dy = 0;
         facing = "south";
@@ -131,5 +159,32 @@ public class Ninja extends Actor
         
         
         setLocation(getX() + dx, getY() + dy);
+    }
+    
+    public void slash()
+    {
+        if (slashAnimationTimer.millisElapsed() < 100)
+        {
+            return;
+        }
+        slashAnimationTimer.mark();
+        
+        
+        if (space)
+        {
+            if(facing.equals("south"))
+            {
+                setImage(slashSouth[slashIndex]);
+            }
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        slashIndex = (slashIndex + 1) % slashSouth.length;
     }
 }
