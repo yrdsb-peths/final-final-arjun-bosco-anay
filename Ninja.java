@@ -50,6 +50,9 @@ public class Ninja extends Actor
     int health = 100;
     HealthBar healthBar;
     
+    SimpleTimer damageTimer = new SimpleTimer();
+    int damageCooldown = 500; // Slower health decline rate
+    
     public Ninja()
     {
         
@@ -145,14 +148,15 @@ public class Ninja extends Actor
     
     public void checkEnemyTouch()
     {
-        if(isTouching(Enemy.class))
+        if(isTouching(Enemy.class) && damageTimer.millisElapsed() >= damageCooldown)
         {
-            health -= 1;
+            health -= 5;
             if(health < 0)
             {
                 health = 0;
             }
             healthBar.update(health);
+            damageTimer.mark();
         }
     }
     
