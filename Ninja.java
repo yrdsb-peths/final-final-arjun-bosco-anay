@@ -46,6 +46,10 @@ public class Ninja extends Actor
     SimpleTimer slashCooldownTimer = new SimpleTimer();
     int slash_cooldown = 100;
     
+    int maxHealth = 100;
+    int health = 100;
+    HealthBar healthBar;
+    
     public Ninja()
     {
         
@@ -133,6 +137,25 @@ public class Ninja extends Actor
         idleIndex = (idleIndex + 1) % idleNorth.length;
     }
     
+    public void addedToWorld(World w)
+    {
+        healthBar = new HealthBar(maxHealth);
+        w.addObject(healthBar, getX(), getY() - 40);
+    }
+    
+    public void checkEnemyTouch()
+    {
+        if(isTouching(Enemy.class))
+        {
+            health -= 1;
+            if(health < 0)
+            {
+                health = 0;
+            }
+            healthBar.update(health);
+        }
+    }
+    
     public void act()
     {
         // Add your action code here.
@@ -144,6 +167,12 @@ public class Ninja extends Actor
         {   
             animateNinja();
         }
+        
+        if(healthBar != null)
+        {
+            healthBar.setLocation(getX(), getY() - 40);
+        }
+        checkEnemyTouch();
     }
     
     public void getKeyboardInputs()
