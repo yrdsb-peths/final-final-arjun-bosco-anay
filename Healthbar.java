@@ -24,7 +24,24 @@ public class Healthbar extends Actor
         
     }
     
+    public void update(int health)
+    {
+        this.health = health;
+        
+    }
     
+    private void updateImage()
+    {
+        GreenfootImage img = new GreenfootImage(width, height);
+        img.setColor(Color.RED);
+        img.fillRect(0, 0, width, height);
+        
+        img.setColor(Color.GREEN);
+        int greenWidth = (int)((double) health / maxHealth * width);
+        img.fillRect(0, 0, greenWidth, height);
+        
+        setImage(img);
+    }
     
     public void act()
     {
