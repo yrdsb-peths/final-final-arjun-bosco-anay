@@ -14,13 +14,17 @@ public class Enemy extends Actor
      */
     int speed = 1;
     boolean ninjaHasMoved = false;
+    
+    private int maxHealth = 100;
+    private int health = 100;
+    private Healthbar healthBar;    
+
     public Enemy()
     {
-            GreenfootImage img = new GreenfootImage("Enemy.png");
-            img.scale(60, 80);
-            setImage(img);
+        GreenfootImage img = new GreenfootImage("Enemy.png");
+        img.scale(60, 80);
+        setImage(img);
     }
-    
     public void addedToWorld(World w)
     {
         Ninja ninja = w.getObjects(Ninja.class).get(0);
@@ -46,21 +50,24 @@ public class Enemy extends Actor
             y = Greenfoot.getRandomNumber(w.getHeight() / 2);
         }
         
+        healthBar = new Healthbar(maxHealth);
+        w.addObject(healthBar, getX(), getY() - 50);
+        
         
         
         setLocation(x, y);
+        healthBar.setLocation(getX() - 5, getY() - 40);
     }
-    
     public void act()
     {
         checkIfNinjaMoved();
         followNinja();
-        if(ninjaHasMoved)
+        
+        if (healthBar != null)
         {
-            
+            healthBar.setLocation(getX() - 5, getY() - 40);
         }
     }
-    
     public void checkIfNinjaMoved()
     {
         Ninja ninja = getWorld().getObjects(Ninja.class).get(0);
@@ -71,7 +78,6 @@ public class Enemy extends Actor
             ninjaHasMoved = true;
         }
     }
-    
     public void followNinja()
     {
         if(getWorld().getObjects(Ninja.class).size() > 0)
@@ -100,5 +106,37 @@ public class Enemy extends Actor
             }
             setLocation(getX() + dx, getY() + dy);
         }
+    }
+    public void takeDamage(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            health = 0;
+            die();
+        }
+        // Update health bar
+        if (healthBar != null)
+        {
+            healthBar.update(health);
+        }
+    }
+    private void die()
+    {  
+        // Remove health bar first
+        if (healthBar != null)
+        {
+            getWorld().removeObject(healthBar);
+        }
+        // Then remove enemy
+        getWorld().removeObject(this);
+    }
+    public int getHealth()
+    {
+        return health;
+    }
+    public int getMaxHealth()
+    {
+        return maxHealth;
     }
 }

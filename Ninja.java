@@ -48,11 +48,14 @@ public class Ninja extends Actor
     
     int maxHealth = 100;
     int health = 100;
-    HealthBar healthBar;
+    Healthbar healthBar;
     
     SimpleTimer damageTimer = new SimpleTimer();
     int damageCooldown = 500; // Slower health decline rate
     
+    private boolean canSlashDamage = false;
+    private int slashDamageFrame = 1; // Frame when damage should be dealt
+    int damage_amount = 50;
     public Ninja()
     {
         
@@ -142,7 +145,7 @@ public class Ninja extends Actor
     
     public void addedToWorld(World w)
     {
-        healthBar = new HealthBar(maxHealth);
+        healthBar = new Healthbar(maxHealth);
         w.addObject(healthBar, getX(), getY() - 40);
     }
     
@@ -166,7 +169,7 @@ public class Ninja extends Actor
         getKeyboardInputs();
         slash();
         playerMovement();
-        
+        checkDoor();
         if (!isSlashing)
         {   
             animateNinja();
@@ -237,6 +240,7 @@ public class Ninja extends Actor
             isSlashing = true;
             slashIndex = 0;
             slashAnimationTimer.mark();
+            canSlashDamage = true; // Enable damage checking
         }
     
         // If currently slashing, play animation
@@ -247,8 +251,14 @@ public class Ninja extends Actor
                 return;
             }
             slashAnimationTimer.mark();
-    
-              
+            
+            if (canSlashDamage && slashIndex == slashDamageFrame)
+            {
+                checkSlashDamage();
+                canSlashDamage = false; // Only deal damage once per slash
+            }
+            
+            
             if (facing.equals("north"))
             {
                 setImage(slashNorth[slashIndex]);
@@ -278,6 +288,84 @@ public class Ninja extends Actor
                 slashCooldownTimer.mark(); // start cooldown AFTER slash ends
             }
         }
-
+    }
+    private void checkSlashDamage()
+    {
+        // Define slash hitbox dimensions
+        int slashRange = 60;  // How far the slash reaches
+        int slashWidth = 40;  // Width of the slash area
+        
+        // Get all enemies in the world as an array
+        // Get all enemies in the world as an array
+        java.util.List enemiesList = getWorld().getObjects(Enemy.class);
+        Enemy[] enemies = new Enemy[enemiesList.size()];
+        enemiesList.toArray(enemies);
+        
+        // Create a rectangular hitbox based on facing direction
+        int slashX = getX();
+        int slashY = getY();
+        int hitboxX, hitboxY, hitboxWidth, hitboxHeight;
+        
+        // Adjust hitbox based on direction
+        if (facing.equals("north"))
+        {
+            hitboxX = slashX - slashWidth/2;
+            hitboxY = slashY - slashRange; 
+            hitboxWidth = slashWidth;
+            hitboxHeight = slashRange;
+        }
+        else if (facing.equals("south"))
+        {
+            hitboxX = slashX - slashWidth/2;
+            hitboxY = slashY; 
+            hitboxWidth = slashWidth;
+            hitboxHeight = slashRange;
+        }
+        else if (facing.equals("east"))
+        {
+            hitboxX = slashX; 
+            hitboxY = slashY - slashWidth/2;
+            hitboxWidth = slashRange;
+            hitboxHeight = slashWidth;
+        }
+        else // west
+        {
+            hitboxX = slashX - slashRange; 
+            hitboxY = slashY - slashWidth/2;
+            hitboxWidth = slashRange;
+            hitboxHeight = slashWidth;
+        }
+        
+        // Check each enemy if they're in the hitbox
+        for (int i = 0; i < enemies.length; i++)
+        {
+            Enemy enemy = enemies[i];
+            if (isEnemyInHitbox(enemy, hitboxX, hitboxY, hitboxWidth, hitboxHeight))
+            {
+                // Deal damage to enemy (one third of their max health)
+                enemy.takeDamage(damage_amount); // Since max health is 100, 100/3 ≈ 33
+            }
+        }
+    }
+    
+    private boolean isEnemyInHitbox(Enemy enemy, int hitboxX, int hitboxY, int hitboxWidth, int hitboxHeight)
+    {
+        int enemyX = enemy.getX();
+        int enemyY = enemy.getY();
+        
+        // Check if enemy is within the rectangular hitbox
+        return enemyX >= hitboxX && enemyX <= hitboxX + hitboxWidth && enemyY >= hitboxY && enemyY <= hitboxY + hitboxHeight;
+    }
+    
+    
+    public void checkDoor()
+    {
+        Door door = (Door) getOneIntersectingObject(Door.class);
+        if (door != null)
+        {
+            // Tell the world to go to next floor
+            ((MyWorld) getWorld()).nextFloor();
+        }
     }
 }
+

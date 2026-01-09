@@ -6,7 +6,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
  * @author (your name) 
  * @version (a version number or a date)
  */
-public class HealthBar extends Actor
+public class Healthbar extends Actor
 {
     /**
      * Act - do whatever the Healthbar wants to do. This method is called whenever
@@ -17,7 +17,7 @@ public class HealthBar extends Actor
     private int width = 40;
     private int height = 6;
     
-    public HealthBar(int maxHealth)
+    public Healthbar(int maxHealth)
     {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
