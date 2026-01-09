@@ -18,12 +18,12 @@ public class Door extends Actor
     {
         // Add your action code here.
     }
-    
     public Door()
     {
-        GreenfootImage img = new GreenfootImage(60, 80);
-        img.setColor(Color.BLACK);
-        img.fillRect(0, 0, 60, 80);
+        // Load the door image from images folder
+        GreenfootImage img = new GreenfootImage("images/door.png");
+        // Scale it to 350x350 pixels as requested
+        img.scale(100, 30);
         setImage(img);
     }
 }

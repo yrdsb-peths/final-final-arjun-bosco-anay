@@ -27,11 +27,12 @@ public class MyWorld extends World {
     public void act()
     {
         // Check if all enemies are dead and door doesn't exist yet
+        // In MyWorld.java act() method, change the door position:
         if (getObjects(Enemy.class).isEmpty() && door == null && currentFloor < maxFloors)
         {
-            // Create door at top center
+            // Create door at top center - adjust for larger size
             door = new Door();
-            addObject(door, getWidth() / 2, 60);
+            addObject(door, getWidth() / 2, 10); // 175 = half of 350 (image height)
             levelComplete = true;
         }
     }
@@ -85,8 +86,5 @@ public class MyWorld extends World {
         }
         
         // Optional: Add some visual feedback
-        showText("Floor " + currentFloor + "!", getWidth() / 2, getHeight() / 2);
-        Greenfoot.delay(30); // Brief pause
-        showText("", getWidth() / 2, getHeight() / 2); // Clear text
     }
 }
