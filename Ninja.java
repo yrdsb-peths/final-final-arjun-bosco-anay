@@ -180,6 +180,10 @@ public class Ninja extends Actor
             healthBar.setLocation(getX(), getY() - 40);
         }
         checkEnemyTouch();
+        if(health <= 0)
+        {
+            Greenfoot.setWorld(new GameOverScreen());
+        }
     }
     
     public void getKeyboardInputs()
