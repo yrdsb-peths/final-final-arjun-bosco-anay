@@ -16,8 +16,11 @@ public class Enemy extends Actor
     boolean ninjaHasMoved = false;
     
     private int maxHealth = 100;
-    private int health = 100;
+    private int health = 100; 
     private Healthbar healthBar;    
+    
+    private static GreenfootSound hitSound = new GreenfootSound("hurt_sound.mp3");
+    private static GreenfootSound deathSound = new GreenfootSound("Kill sound.mp4");
 
     public Enemy()
     {
@@ -110,6 +113,10 @@ public class Enemy extends Actor
     public void takeDamage(int damage)
     {
         health -= damage;
+        
+        hitSound.stop();
+        hitSound.play();
+        
         if (health <= 0)
         {
             health = 0;
@@ -123,6 +130,9 @@ public class Enemy extends Actor
     }
     private void die()
     {  
+        deathSound.stop();
+        deathSound.play();
+        
         // Remove health bar first
         if (healthBar != null)
         {
