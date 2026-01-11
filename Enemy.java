@@ -20,7 +20,7 @@ public class Enemy extends Actor
     private Healthbar healthBar;    
     
     private static GreenfootSound hitSound = new GreenfootSound("hurt_sound.mp3");
-    private static GreenfootSound deathSound = new GreenfootSound("Kill sound.mp4");
+    private static GreenfootSound deathSound = new GreenfootSound("Death.mp3");
 
     public Enemy()
     {

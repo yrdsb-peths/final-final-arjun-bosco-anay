@@ -59,7 +59,7 @@ public class Ninja extends Actor
     private boolean hasDied = false;
     
     private static GreenfootSound hitSound = new GreenfootSound("hurt_sound.mp3");
-    private static GreenfootSound deathSound = new GreenfootSound("Kill sound.mp4");
+    private static GreenfootSound deathSound = new GreenfootSound("Death.mp3");
     public Ninja()
     {
         
