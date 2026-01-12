@@ -16,7 +16,7 @@ public class GameOverScreen extends World
     public GameOverScreen()
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
-        super(600, 600, 1); 
+        super(600, 400, 1); 
         
         GreenfootImage bg = new GreenfootImage("GameOverScreen.jpg");
         setBackground(bg);

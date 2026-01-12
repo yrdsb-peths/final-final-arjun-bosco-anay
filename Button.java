@@ -17,12 +17,9 @@ public class Button extends Actor
     public Button(String text, String action)
     {
         this.action = action;
-        
         GreenfootImage img = new GreenfootImage(200, 50);
-        img.setColor(Color.GRAY);
-        img.fill();
         img.setColor(Color.WHITE);
-        img.drawString(text, 50, 30);
+        img.drawString(text, 50, 50);
         setImage(img);
     }
     
