@@ -21,8 +21,8 @@ public class GameOverScreen extends World
         GreenfootImage bg = new GreenfootImage("GameOverScreen.jpg");
         setBackground(bg);
         
-        addObject(new Button("Restart", "restart"), getWidth() / 2, getHeight() / 3);
+        addObject(new Button("Restart", "restart"), getWidth() / 2, getHeight() / 2 + 50);
         
-        addObject(new Button("Exit", "exit"), getWidth() / 2, getHeight() / 2);
+        addObject(new Button("Exit", "exit"), getWidth() / 2, getHeight() / 2 + 100);
     }
 }

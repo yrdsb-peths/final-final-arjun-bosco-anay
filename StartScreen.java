@@ -20,7 +20,7 @@ public class StartScreen extends World
         GreenfootImage bg = new GreenfootImage("StartScreen.jpg");
         setBackground(bg);
         
-        addObject(new Button("Press Start", "start"), getWidth() / 2, getHeight() / 4);
+        addObject(new Button("Press Start", "start"), getWidth() / 2, getHeight() / 2 + 100);
     }
     
 }
