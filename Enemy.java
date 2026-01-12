@@ -64,7 +64,11 @@ public class Enemy extends Actor
     public void act()
     {
         checkIfNinjaMoved();
-        followNinja();
+        if (ninjaHasMoved)
+        {
+            followNinja();
+        }
+
         
         if (healthBar != null)
         {
@@ -87,27 +91,36 @@ public class Enemy extends Actor
         {
             Ninja ninja = getWorld().getObjects(Ninja.class).get(0);
             
-            int dx = 0;
-            int dy = 0;
+            // Calculate horizontal and vertical distance to ninja
+            int distanceX = Math.abs(getX() - ninja.getX());
+            int distanceY = Math.abs(getY() - ninja.getY());
             
-            if(getX() < ninja.getX())
+            // Only follow if ninja is within a 100x100 pixel box
+            // (50 pixels in each direction from the enemy's center)
+            if (distanceX <= 300 && distanceY <= 300)
             {
-                dx = speed;
+                int dx = 0;
+                int dy = 0;
+                
+                if(getX() < ninja.getX())
+                {
+                    dx = speed;
+                }
+                else if (getX() > ninja.getX())
+                {
+                    dx = -speed;
+                }
+                
+                if(getY() < ninja.getY())
+                {
+                    dy = speed;
+                }
+                else if (getY() > ninja.getY())
+                {
+                    dy = -speed;
+                }
+                setLocation(getX() + dx, getY() + dy);
             }
-            else if (getX() > ninja.getX())
-            {
-                dx = -speed;
-            }
-            
-            if(getY() < ninja.getY())
-            {
-                dy = speed;
-            }
-            else if (getY() > ninja.getY())
-            {
-                dy = -speed;
-            }
-            setLocation(getX() + dx, getY() + dy);
         }
     }
     public void takeDamage(int damage)
