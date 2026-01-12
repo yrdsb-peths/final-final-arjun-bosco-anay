@@ -146,6 +146,9 @@ public class Enemy extends Actor
         deathSound.stop();
         deathSound.play();
         
+        // Count the kill (add this line)
+        MyWorld.addKill();
+        
         // Remove health bar first
         if (healthBar != null)
         {

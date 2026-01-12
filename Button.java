@@ -1,4 +1,4 @@
-import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+     import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
  * Write a description of class Button here.
@@ -26,8 +26,15 @@ public class Button extends Actor
     {
         if(Greenfoot.mouseClicked(this))
         {
-            if(action.equals("start") || action.equals("restart"))
+            if(action.equals("start"))
             {
+                // Reset kills only when starting fresh from main menu
+                MyWorld.resetKills(); // You'll need to add this method
+                Greenfoot.setWorld(new MyWorld());
+            }
+            else if(action.equals("restart"))
+            {
+                // Don't reset kills on restart after death
                 Greenfoot.setWorld(new MyWorld());
             }
             else if(action.equals("exit"))

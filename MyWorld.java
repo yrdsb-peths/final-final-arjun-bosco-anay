@@ -4,6 +4,8 @@ public class MyWorld extends World {
     GreenfootSound bgMusic = new GreenfootSound("bgmusic.mp3");
     
     private Label floorLabel;
+    private Label killLabel;
+    private static int totalKills = 0; // Static so it persists across worlds      
     private Door door;
     private int currentFloor = 1;
     private int maxFloors = 10;
@@ -23,12 +25,16 @@ public class MyWorld extends World {
         // Add floor label at top of screen
         floorLabel = new Label("Floor: " + currentFloor, 30);
         addObject(floorLabel, 80, 45);
+        // Add kill counter at top right of screen
+        killLabel = new Label("Kills: " + totalKills, 30);  
+        addObject(killLabel, getWidth() - 100, 45);
+        
         
     }
     public void act()
     {
-        // Check if all enemies are dead and door doesn't exist yet
-        // In MyWorld.java act() method, change the door position:
+        killLabel.setValue("Kills: " + totalKills);
+        
         if (getObjects(Enemy.class).isEmpty() && door == null && currentFloor < maxFloors)
         {
             // Create door at top center - adjust for larger size
@@ -86,6 +92,14 @@ public class MyWorld extends World {
             addObject(enemy, spawnX, spawnY);
         }
         
-        // Optional: Add some visual feedback
+    }  
+    public static void addKill()
+    {
+        totalKills++;
+    }
+    public static void resetKills()
+    {
+        totalKills = 0;
     }
 }
+
