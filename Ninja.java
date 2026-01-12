@@ -56,6 +56,10 @@ public class Ninja extends Actor
     private boolean canSlashDamage = false;
     private int slashDamageFrame = 1; // Frame when damage should be dealt
     int damage_amount = 50;
+    private boolean hasDied = false;
+    
+    private static GreenfootSound hitSound = new GreenfootSound("hurt_sound.mp3");
+    private static GreenfootSound deathSound = new GreenfootSound("Death.mp3");
     public Ninja()
     {
         
@@ -158,6 +162,10 @@ public class Ninja extends Actor
             {
                 health = 0;
             }
+            
+            hitSound.stop();
+            hitSound.play();
+            
             healthBar.update(health);
             damageTimer.mark();
         }
@@ -180,8 +188,12 @@ public class Ninja extends Actor
             healthBar.setLocation(getX(), getY() - 40);
         }
         checkEnemyTouch();
-        if(health <= 0)
+        if (health <= 0 && !hasDied)
         {
+            hasDied = true;
+            deathSound.stop();
+            deathSound.play();
+            Greenfoot.delay(30); // let sound play briefly
             Greenfoot.setWorld(new GameOverScreen());
         }
     }
