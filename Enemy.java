@@ -1,33 +1,42 @@
-import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+import greenfoot.*;  // Imports Greenfoot classes for actors, images, sounds, and input
 
 /**
- * Write a description of class Enemy here.
- * 
- * @author (your name) 
- * @version (a version number or a date)
+ * This class represents an enemy that can follow the ninja,
+ * take damage, and be defeated.
  */
 public class Enemy extends Actor
 {
-    /**
-     * Act - do whatever the Enemy wants to do. This method is called whenever
-     * the 'Act' or 'Run' button gets pressed in the environment.
-     */
+    // Movement speed of the enemy
     int speed = 1;
+    
+    // Tracks whether the ninja has started moving
     boolean ninjaHasMoved = false;
     
+    // Health values for the enemy
     private int maxHealth = 100;
     private int health = 100; 
+    
+    // Health bar displayed above the enemy
     private Healthbar healthBar;    
     
+    // Sound effects for taking damage and dying
     private static GreenfootSound hitSound = new GreenfootSound("hurt_sound.mp3");
     private static GreenfootSound deathSound = new GreenfootSound("Death.mp3");
 
+    /**
+     * Constructor that sets and scales the enemy image.
+     */
     public Enemy()
     {
         GreenfootImage img = new GreenfootImage("Enemy.png");
         img.scale(60, 80);
         setImage(img);
     }
+
+    /**
+     * Runs when the enemy is added to the world.
+     * Spawns the enemy away from the ninja and adds a health bar.
+     */
     public void addedToWorld(World w)
     {
         Ninja ninja = w.getObjects(Ninja.class).get(0);
@@ -35,6 +44,7 @@ public class Enemy extends Actor
         int x;
         int y;
         
+        // Spawns enemy on opposite side of the ninja (horizontal)
         if(ninja.getX() < w.getWidth() / 2)
         {
             x = Greenfoot.getRandomNumber(w.getWidth() / 2) + w.getWidth() / 2;
@@ -44,6 +54,7 @@ public class Enemy extends Actor
             x = Greenfoot.getRandomNumber(w.getWidth() / 2);
         }
         
+        // Spawns enemy on opposite side of the ninja (vertical)
         if(ninja.getY() < w.getHeight() / 2)
         {
             y = Greenfoot.getRandomNumber(w.getHeight() / 2) + w.getHeight() / 2;
@@ -53,14 +64,19 @@ public class Enemy extends Actor
             y = Greenfoot.getRandomNumber(w.getHeight() / 2);
         }
         
+        // Create and add health bar
         healthBar = new Healthbar(maxHealth);
         w.addObject(healthBar, getX(), getY() - 50);
         
-        
-        
+        // Set enemy and health bar positions
         setLocation(x, y);
         healthBar.setLocation(getX() - 5, getY() - 40);
     }
+
+    /**
+     * Main behavior loop.
+     * Checks movement and updates health bar position.
+     */
     public void act()
     {
         checkIfNinjaMoved();
@@ -69,60 +85,64 @@ public class Enemy extends Actor
             followNinja();
         }
 
-        
+        // Keeps health bar above the enemy
         if (healthBar != null)
         {
             healthBar.setLocation(getX() - 5, getY() - 40);
         }
     }
+
+    /**
+     * Detects if the ninja has moved using keyboard input.
+     */
     public void checkIfNinjaMoved()
     {
         Ninja ninja = getWorld().getObjects(Ninja.class).get(0);
         
-  
-        if (Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("a") || Greenfoot.isKeyDown("s") || Greenfoot.isKeyDown("d") || Greenfoot.isKeyDown("up") || Greenfoot.isKeyDown("down") || Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("right"))
+        // Checks common movement keys
+        if (Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("a") || Greenfoot.isKeyDown("s") || 
+            Greenfoot.isKeyDown("d") || Greenfoot.isKeyDown("up") || Greenfoot.isKeyDown("down") || 
+            Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("right"))
         {
             ninjaHasMoved = true;
         }
     }
+
+    /**
+     * Moves the enemy toward the ninja if close enough.
+     */
     public void followNinja()
     {
         if(getWorld().getObjects(Ninja.class).size() > 0)
         {
             Ninja ninja = getWorld().getObjects(Ninja.class).get(0);
             
-            // Calculate horizontal and vertical distance to ninja
+            // Distance between enemy and ninja
             int distanceX = Math.abs(getX() - ninja.getX());
             int distanceY = Math.abs(getY() - ninja.getY());
             
-            // Only follow if ninja is within a 100x100 pixel box
-            // (50 pixels in each direction from the enemy's center)
+            // Only follow if ninja is within range
             if (distanceX <= 300 && distanceY <= 300)
             {
                 int dx = 0;
                 int dy = 0;
                 
-                if(getX() < ninja.getX())
-                {
-                    dx = speed;
-                }
-                else if (getX() > ninja.getX())
-                {
-                    dx = -speed;
-                }
+                // Horizontal movement
+                if(getX() < ninja.getX()) dx = speed;
+                else if (getX() > ninja.getX()) dx = -speed;
                 
-                if(getY() < ninja.getY())
-                {
-                    dy = speed;
-                }
-                else if (getY() > ninja.getY())
-                {
-                    dy = -speed;
-                }
+                // Vertical movement
+                if(getY() < ninja.getY()) dy = speed;
+                else if (getY() > ninja.getY()) dy = -speed;
+                
                 setLocation(getX() + dx, getY() + dy);
             }
         }
     }
+
+    /**
+     * Reduces health when damaged and plays sound effects.
+     */
     public void takeDamage(int damage)
     {
         health -= damage;
@@ -130,17 +150,23 @@ public class Enemy extends Actor
         hitSound.stop();
         hitSound.play();
         
+        // Check for death
         if (health <= 0)
         {
             health = 0;
             die();
         }
-        // Update health bar
+        
+        // Update health bar display
         if (healthBar != null)
         {
             healthBar.update(health);
         }
     }
+
+    /**
+     * Handles enemy death and cleanup.
+     */
     private void die()
     {  
         deathSound.stop();
@@ -151,13 +177,18 @@ public class Enemy extends Actor
         {
             getWorld().removeObject(healthBar);
         }
-        // Then remove enemy
+        
+        // Remove enemy from the world
         getWorld().removeObject(this);
     }
+
+    // Returns current health
     public int getHealth()
     {
         return health;
     }
+
+    // Returns maximum health
     public int getMaxHealth()
     {
         return maxHealth;
