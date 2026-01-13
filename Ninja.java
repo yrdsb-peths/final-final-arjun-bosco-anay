@@ -193,7 +193,9 @@ public class Ninja extends Actor
             hasDied = true;
             deathSound.stop();
             deathSound.play();
-            Greenfoot.delay(30); // let sound play briefly
+            Greenfoot.delay(30);
+            
+            MyWorld.resetCurrentKills();
             Greenfoot.setWorld(new GameOverScreen());
         }
     }

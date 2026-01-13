@@ -4,8 +4,10 @@ public class MyWorld extends World {
     GreenfootSound bgMusic = new GreenfootSound("bgmusic.mp3");
     
     private Label floorLabel;
-    private Label killLabel;
-    private static int totalKills = 0; // Static so it persists across worlds      
+    private Label currentKillsLabel;  // Rename from killLabel
+    private Label mostKillsLabel;     // New label for most kills
+    private static int currentKills = 0;
+    private static int mostKills = 0;      
     private Door door;
     private int currentFloor = 1;
     private int maxFloors = 10;
@@ -22,31 +24,35 @@ public class MyWorld extends World {
         
         bgMusic.playLoop();
         
-        // Add floor label at top of screen
+        // Add floor label at top left
         floorLabel = new Label("Floor: " + currentFloor, 30);
         addObject(floorLabel, 80, 45);
-        // Add kill counter at top right of screen
-        killLabel = new Label("Kills: " + totalKills, 30);  
-        addObject(killLabel, getWidth() - 100, 45);
         
+        // Add current kills label at top right
+        currentKillsLabel = new Label("Kills: " + currentKills, 30);  
+        addObject(currentKillsLabel, getWidth() - 80, 45);
         
+        // Add most kills label below current kills
+        mostKillsLabel = new Label("Most Kills: " + mostKills, 30);
+        addObject(mostKillsLabel, getWidth() - 110, 75);
     }
     public void act()
     {
-        killLabel.setValue("Kills: " + totalKills);
+        // Update both kill labels
+        currentKillsLabel.setValue("Kills: " + currentKills);
+        mostKillsLabel.setValue("Most Kills: " + mostKills);
         
         if (getObjects(Enemy.class).isEmpty() && door == null && currentFloor < maxFloors)
         {
-            // Create door at top center - adjust for larger size
+            // Create door at top center
             door = new Door();
-            addObject(door, getWidth() / 2, 10); // 175 = half of 350 (image height)
+            addObject(door, getWidth() / 2, 10);
             levelComplete = true;
         }
     }
-    
     public void nextFloor()
     {
-        if (currentFloor >= maxFloors)
+           if (currentFloor >= maxFloors)
         {
             // Game completed
             showText("You Win! All " + maxFloors + " floors cleared!", getWidth() / 2, getHeight() / 2);
@@ -95,11 +101,15 @@ public class MyWorld extends World {
     }  
     public static void addKill()
     {
-        totalKills++;
+        currentKills++;
+        // Update most kills if current kills is higher
+        if (currentKills > mostKills) {
+            mostKills = currentKills;
+        }
     }
-    public static void resetKills()
+    public static void resetCurrentKills()
     {
-        totalKills = 0;
+        currentKills = 0;
     }
 }
 

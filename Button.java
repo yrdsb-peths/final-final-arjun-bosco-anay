@@ -31,15 +31,19 @@ public class Button extends Actor
      */
     public void act()
     {
-        // Checks if this button was clicked
         if(Greenfoot.mouseClicked(this))
         {
-            // Starts or restarts the game
-            if(action.equals("start") || action.equals("restart"))
+            if(action.equals("start"))
             {
+                // Starting fresh from main menu - reset current kills
+                MyWorld.resetCurrentKills();
                 Greenfoot.setWorld(new MyWorld());
             }
-            // Returns to the start screen
+            else if(action.equals("restart"))
+            {
+                // Restarting after death - current kills already reset in Ninja
+                Greenfoot.setWorld(new MyWorld());
+            }
             else if(action.equals("exit"))
             {
                 Greenfoot.setWorld(new StartScreen());
