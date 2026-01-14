@@ -60,6 +60,11 @@ public class Ninja extends Actor
     
     private static GreenfootSound hitSound = new GreenfootSound("hurt_sound.mp3");
     private static GreenfootSound deathSound = new GreenfootSound("Death.mp3");
+    
+    
+    private boolean debugMode = false;
+    private HitboxVisualizer debugHitbox = null;
+    private boolean f2WasPressed = false; // Track if F2 was pressed last frame
     public Ninja()
     {
         
@@ -178,6 +183,22 @@ public class Ninja extends Actor
         slash();
         playerMovement();
         checkDoor();
+        
+        // TOGGLE DEBUG MODE WITH F2
+        boolean f2IsPressed = Greenfoot.isKeyDown("F2");
+        if (f2IsPressed && !f2WasPressed) {
+            // F2 was just pressed (not held)
+            debugMode = !debugMode; // Toggle debug mode
+            
+            // Show/hide debug text when toggling
+            if (debugMode && getWorld() != null) {
+                getWorld().showText("DEBUG MODE", getWorld().getWidth() / 2, 20);
+            } else if (getWorld() != null) {
+                getWorld().showText("", getWorld().getWidth() / 2, 20);
+            }
+        }
+        f2WasPressed = f2IsPressed; // Remember for next frame
+        
         if (!isSlashing)
         {   
             animateNinja();
@@ -188,15 +209,23 @@ public class Ninja extends Actor
             healthBar.setLocation(getX(), getY() - 40);
         }
         checkEnemyTouch();
+        
         if (health <= 0 && !hasDied)
         {
             hasDied = true;
             deathSound.stop();
             deathSound.play();
-            Greenfoot.delay(30);
-            
+            Greenfoot.delay(30); // let sound play briefly
             MyWorld.resetCurrentKills();
             Greenfoot.setWorld(new GameOverScreen());
+        }
+        
+        // Clean up debug hitbox if debug mode is off and we're not slashing
+        if (!debugMode && debugHitbox != null && !isSlashing)
+        {
+            getWorld().removeObject(debugHitbox);
+            debugHitbox = null;
+            getWorld().showText("", getWorld().getWidth() / 2, 20); // Clear text
         }
     }
     
@@ -247,8 +276,6 @@ public class Ninja extends Actor
     
     public void slash()
     {
-        
-
         // Start slash ONLY if:
         // - space is pressed
         // - not already slashing
@@ -275,7 +302,6 @@ public class Ninja extends Actor
                 checkSlashDamage();
                 canSlashDamage = false; // Only deal damage once per slash
             }
-            
             
             if (facing.equals("north"))
             {
@@ -304,16 +330,31 @@ public class Ninja extends Actor
             {
                 isSlashing = false;
                 slashCooldownTimer.mark(); // start cooldown AFTER slash ends
+                
+                // Clean up debug hitbox after slash animation ends
+                if (debugHitbox != null && getWorld() != null)
+                {
+                    getWorld().removeObject(debugHitbox);
+                    debugHitbox = null;
+                }
             }
+        }
+        else if (!debugMode && debugHitbox != null && getWorld() != null)
+        {
+            // Clean up debug hitbox when not slashing and debug mode is off
+            getWorld().removeObject(debugHitbox);
+            debugHitbox = null;
+            
+            // Clear debug text when debug mode is off
+            getWorld().showText("", getWorld().getWidth() / 2, 20);
         }
     }
     private void checkSlashDamage()
     {
         // Define slash hitbox dimensions
-        int slashRange = 70;  // How far the slash reaches
+        int slashRange = 60;  // How far the slash reaches
         int slashWidth = 40;  // Width of the slash area
         
-        // Get all enemies in the world as an array
         // Get all enemies in the world as an array
         java.util.List enemiesList = getWorld().getObjects(Enemy.class);
         Enemy[] enemies = new Enemy[enemiesList.size()];
@@ -327,8 +368,6 @@ public class Ninja extends Actor
         // Adjust hitbox based on direction
         if (facing.equals("north"))
         {
-            
-            slashRange += 20; // Slight addition because it didn't match where the sprite is
             hitboxX = slashX - slashWidth/2;
             hitboxY = slashY - slashRange; 
             hitboxWidth = slashWidth;
@@ -356,14 +395,41 @@ public class Ninja extends Actor
             hitboxHeight = slashWidth;
         }
         
+        // DEBUG: Show hitbox visualization
+        if (debugMode)
+        {
+            if (debugHitbox == null)
+            {
+                debugHitbox = new HitboxVisualizer(hitboxWidth, hitboxHeight);
+                getWorld().addObject(debugHitbox, hitboxX + hitboxWidth/2, hitboxY + hitboxHeight/2);
+            }
+            else
+            {
+                debugHitbox.updateSize(hitboxWidth, hitboxHeight);
+                debugHitbox.setLocation(hitboxX + hitboxWidth/2, hitboxY + hitboxHeight/2);
+            }
+            
+            // Show "DEBUG MODE" text
+            getWorld().showText("DEBUG MODE", getWorld().getWidth() / 2, 20);
+        }
+        else if (debugHitbox != null)
+        {
+            // Remove debug hitbox when debug mode is off
+            getWorld().removeObject(debugHitbox);
+            debugHitbox = null;
+            
+            // Clear debug text
+            getWorld().showText("", getWorld().getWidth() / 2, 20);
+        }
+        
         // Check each enemy if they're in the hitbox
         for (int i = 0; i < enemies.length; i++)
         {
             Enemy enemy = enemies[i];
             if (isEnemyInHitbox(enemy, hitboxX, hitboxY, hitboxWidth, hitboxHeight))
             {
-                // Deal damage to enemy (one third of their max health)
-                enemy.takeDamage(damage_amount); // Since max health is 100, 100/3 ≈ 33
+                // Deal damage to enemy
+                enemy.takeDamage(damage_amount);
             }
         }
     }
