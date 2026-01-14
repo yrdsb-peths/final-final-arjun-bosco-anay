@@ -78,6 +78,17 @@ public class MyWorld extends World {
             healAmount = 50;
         }
         
+         boolean previousWasBossFloor = ((currentFloor - 1) % 10 == 0);
+    
+        if (previousWasBossFloor) {
+            // Player just completed a mini boss floor, heal to full
+            player.healToFull();
+        } else {
+            if (healAmount > 0) {
+                player.heal(healAmount);
+            }
+        }
+        
         // Apply healing to player
         player.heal(healAmount);
         

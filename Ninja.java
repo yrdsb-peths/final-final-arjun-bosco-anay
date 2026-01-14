@@ -404,5 +404,16 @@ public class Ninja extends Actor
             healthBar.update(health);
         }
     }
+    
+    public void healToFull()
+    {
+        health = maxHealth; // Set to 100 (or whatever maxHealth is)
+        
+        // Update health bar if it exists
+        if (healthBar != null)
+        {
+            healthBar.update(health);
+        }
+    }
 }
 
