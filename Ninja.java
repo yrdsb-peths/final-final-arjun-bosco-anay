@@ -327,6 +327,8 @@ public class Ninja extends Actor
         // Adjust hitbox based on direction
         if (facing.equals("north"))
         {
+            
+            slashRange += 20; // Slight addition because it didn't match where the sprite is
             hitboxX = slashX - slashWidth/2;
             hitboxY = slashY - slashRange; 
             hitboxWidth = slashWidth;
