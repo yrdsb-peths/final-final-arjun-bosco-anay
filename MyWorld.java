@@ -13,6 +13,9 @@ public class MyWorld extends World {
     private int maxFloors = 10;
     private boolean levelComplete = false;
     
+    private static int bossLevel = 0; // Tracks which mini boss level we're on (1, 2, 3...)
+    private static int enemyHealthBoost = 0; // Tracks health boost for regular enemies
+    
     public MyWorld() {
         super(600, 600, 1);
         GreenfootImage bg = new GreenfootImage("dungeon_background.png");
@@ -44,7 +47,7 @@ public class MyWorld extends World {
         currentKillsLabel.setValue("Kills: " + currentKills);
         mostKillsLabel.setValue("Most Kills: " + mostKills);
         
-        if (getObjects(Enemy.class).isEmpty() && door == null && currentFloor < maxFloors)
+        if (getObjects(Enemy.class).isEmpty() && door == null)
         {
             // Create door at top center
             door = new Door();
@@ -54,14 +57,6 @@ public class MyWorld extends World {
     }
     public void nextFloor()
     {
-       if (currentFloor >= maxFloors)
-        {
-            // Game completed
-            showText("You Win! All " + maxFloors + " floors cleared!", getWidth() / 2, getHeight() / 2);
-            Greenfoot.stop();
-            return;
-        }
-        
         // Remove door
         removeObject(door);
         door = null;
@@ -71,21 +66,17 @@ public class MyWorld extends World {
         currentFloor++;
         floorLabel.setValue("Floor: " + currentFloor);
         
-         // HEAL PLAYER BASED ON FLOOR
         // Get player reference
         Ninja player = getObjects(Ninja.class).get(0);
-         int healAmount = 0;
         
-        if (currentFloor <= 3) {
-            // Floors 1-4: Heal 25 health
-            healAmount = 10;
-        } else if (currentFloor <= 6) {
-            // Floors 5-9: Heal 50 health
+        // HEAL PLAYER BASED ON FLOOR
+        int healAmount = 0;
+        
+        if (currentFloor <= 4) {
             healAmount = 25;
-        }else{
+        } else if (currentFloor <= 9) {
             healAmount = 50;
         }
-        // Floor 10 doesn't heal (no next floor)
         
         // Apply healing to player
         player.heal(healAmount);
@@ -93,32 +84,67 @@ public class MyWorld extends World {
         // Move player to bottom center
         player.setLocation(getWidth() / 2, getHeight() - 60);
         
-        // Spawn enemies equal to floor number
-        // Spawn enemies equal to floor number
-        for (int i = 0; i < currentFloor; i++)
+        // Check if this is a mini boss floor (every 10 floors)
+        boolean isBossFloor = (currentFloor % 10 == 0);
+        
+        if (isBossFloor)
         {
-            Enemy enemy = new Enemy();
+            // This is a mini boss floor - spawn only the mini boss
+            bossLevel = currentFloor / 10;
             
-            // Spawn enemies away from player at bottom
-            int spawnX;
-            int spawnY;
+            int bossHealth = 200 + (bossLevel - 1) * 100;
             
-            // Generate position
-            spawnX = Greenfoot.getRandomNumber(getWidth() - 100) + 50;
-            spawnY = Greenfoot.getRandomNumber(getHeight() / 3) + 50; // Spawn in top 2/3 of screen
+            // Create and spawn mini boss
+            Enemy miniBoss = createMiniBoss(bossHealth, bossLevel);  // This calls setAsMiniBoss()
+            addObject(miniBoss, getWidth() / 2, 100); // Spawn at top center
             
-            // If too close to player, regenerate X position
-            while (Math.abs(spawnX - player.getX()) < 100)
+            // Show boss announcement
+            showText("MINI BOSS LEVEL " + bossLevel + "!", getWidth() / 2, getHeight() / 2);
+            Greenfoot.delay(60);
+            showText("", getWidth() / 2, getHeight() / 2); // Clear text
+        }else
+        {
+            // Normal floor - spawn regular enemies
+            for (int i = 0; i < currentFloor; i++)
             {
+                Enemy enemy = new Enemy();  // Just create regular enemy - constructor handles health boost
+                
+                // Spawn enemies away from player at bottom
+                int spawnX;
+                int spawnY;
+                
+                // Generate position
                 spawnX = Greenfoot.getRandomNumber(getWidth() - 100) + 50;
+                spawnY = Greenfoot.getRandomNumber(getHeight() / 3) + 50;
+                
+                // If too close to player, regenerate X position
+                while (Math.abs(spawnX - player.getX()) < 100)
+                {
+                    spawnX = Greenfoot.getRandomNumber(getWidth() - 100) + 50;
+                }
+                
+                addObject(enemy, spawnX, spawnY);
             }
-            
-            addObject(enemy, spawnX, spawnY);
         }
-        
-        
-        
-    }  
+    }
+
+    // Method to create a mini boss
+    private Enemy createMiniBoss(int health, int level)
+    {
+        Enemy miniBoss = new Enemy();
+        miniBoss.setAsMiniBoss(health, level);
+        return miniBoss;
+    }
+    public static void increaseEnemyHealthBoost()
+    {
+        enemyHealthBoost += 50;
+    }
+    
+    public static int getEnemyHealthBoost()
+    {
+        return enemyHealthBoost;
+    }
+    
     public static void addKill()
     {
         currentKills++;
@@ -127,6 +153,7 @@ public class MyWorld extends World {
             mostKills = currentKills;
         }
     }
+    
     public static void resetCurrentKills()
     {
         currentKills = 0;

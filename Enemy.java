@@ -22,16 +22,24 @@ public class Enemy extends Actor
     // Sound effects for taking damage and dying
     private static GreenfootSound hitSound = new GreenfootSound("hurt_sound.mp3");
     private static GreenfootSound deathSound = new GreenfootSound("Death.mp3");
+    
+    private boolean isMiniBoss = false;
+    private int bossLevel = 0;
+    private Label bossTitleLabel = null;
 
     /**
      * Constructor that sets and scales the enemy image.
      */
     public Enemy()
-    {
+    {   
         GreenfootImage img = new GreenfootImage("Enemy.png");
         img.scale(60, 80);
         setImage(img);
-    }
+        
+        // For regular enemies, start with base health + boost
+        maxHealth = 100 + MyWorld.getEnemyHealthBoost();
+        health = maxHealth;
+    }   
 
     /**
      * Runs when the enemy is added to the world.
@@ -44,33 +52,45 @@ public class Enemy extends Actor
         int x;
         int y;
         
-        // Spawns enemy on opposite side of the ninja (horizontal)
-        if(ninja.getX() < w.getWidth() / 2)
+        // Mini bosses spawn at top, regular enemies use normal logic
+        if (isMiniBoss)
         {
-            x = Greenfoot.getRandomNumber(w.getWidth() / 2) + w.getWidth() / 2;
+            x = w.getWidth() / 2;
+            y = 100;
         }
         else
         {
-            x = Greenfoot.getRandomNumber(w.getWidth() / 2);
+            // Regular enemy spawning logic
+            if(ninja.getX() < w.getWidth() / 2)
+            {
+                x = Greenfoot.getRandomNumber(w.getWidth() / 2) + w.getWidth() / 2;
+            }
+            else
+            {
+                x = Greenfoot.getRandomNumber(w.getWidth() / 2);
+            }
+            
+            if(ninja.getY() < w.getHeight() / 2)
+            {
+                y = Greenfoot.getRandomNumber(w.getHeight() / 2) + w.getHeight() / 2;
+            }
+            else
+            {
+                y = Greenfoot.getRandomNumber(w.getHeight() / 2);
+            }
         }
         
-        // Spawns enemy on opposite side of the ninja (vertical)
-        if(ninja.getY() < w.getHeight() / 2)
-        {
-            y = Greenfoot.getRandomNumber(w.getHeight() / 2) + w.getHeight() / 2;
-        }
-        else
-        {
-            y = Greenfoot.getRandomNumber(w.getHeight() / 2);
-        }
-        
-        // Create and add health bar
         healthBar = new Healthbar(maxHealth);
         w.addObject(healthBar, getX(), getY() - 50);
         
-        // Set enemy and health bar positions
         setLocation(x, y);
         healthBar.setLocation(getX() - 5, getY() - 40);
+        
+        // Position boss title if it exists
+        if (bossTitleLabel != null)
+        {
+            bossTitleLabel.setLocation(getX(), getY() - 90);
+        }
     }
 
     /**
@@ -84,11 +104,16 @@ public class Enemy extends Actor
         {
             followNinja();
         }
-
-        // Keeps health bar above the enemy
+        
         if (healthBar != null)
         {
             healthBar.setLocation(getX() - 5, getY() - 40);
+        }
+        
+        // Update boss title position if it exists
+        if (bossTitleLabel != null)
+        {
+            bossTitleLabel.setLocation(getX(), getY() - 90);
         }
     }
 
@@ -172,8 +197,14 @@ public class Enemy extends Actor
         deathSound.stop();
         deathSound.play();
         
-        // Count the kill (add this line)
+        // Count the kill
         MyWorld.addKill();
+        
+        // If this was a mini boss, increase enemy health boost
+        if (isMiniBoss)
+        {
+            MyWorld.increaseEnemyHealthBoost(); 
+        }
         
         // Remove health bar first
         if (healthBar != null)
@@ -181,7 +212,13 @@ public class Enemy extends Actor
             getWorld().removeObject(healthBar);
         }
         
-        // Remove enemy from the world
+        // Remove boss title if it exists
+        if (bossTitleLabel != null)
+        {
+            getWorld().removeObject(bossTitleLabel);
+        }
+        
+        // Then remove enemy
         getWorld().removeObject(this);
     }
 
@@ -195,5 +232,26 @@ public class Enemy extends Actor
     public int getMaxHealth()
     {
         return maxHealth;
+    }
+    
+    
+    public void setAsMiniBoss(int health, int level)
+    {
+        this.isMiniBoss = true;
+        this.bossLevel = level;
+        this.maxHealth = health;  // Override the health from constructor
+        this.health = health;
+        
+        // Make it larger
+        GreenfootImage img = getImage();
+        img.scale(80, 105); 
+        
+        // Add title label
+        if (getWorld() != null)
+        {
+            bossTitleLabel = new Label("Lvl " + level + " Mini Boss", 20);
+            bossTitleLabel.setFillColor(Color.RED);
+            getWorld().addObject(bossTitleLabel, getX(), getY() - 90);
+        }
     }
 }
