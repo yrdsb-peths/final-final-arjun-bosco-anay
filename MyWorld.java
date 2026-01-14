@@ -74,11 +74,13 @@ public class MyWorld extends World {
         Ninja player = getObjects(Ninja.class).get(0);
          int healAmount = 0;
         
-        if (currentFloor <= 4) {
+        if (currentFloor <= 3) {
             // Floors 1-4: Heal 25 health
-            healAmount = 25;
-        } else if (currentFloor <= 9) {
+            healAmount = 10;
+        } else if (currentFloor <= 6) {
             // Floors 5-9: Heal 50 health
+            healAmount = 25;
+        }else{
             healAmount = 50;
         }
         // Floor 10 doesn't heal (no next floor)
