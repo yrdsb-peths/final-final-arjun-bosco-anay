@@ -5,3 +5,6 @@ INTSRUCTIONS
 2. Double click on project.greenfoot
 3. When in greenfoot, right click on the "StartScreen" class and select "new StartScreen()"
 4. Start playing!
+
+CHEAT CODE
+If you run around the enemies, you can gather them all and then attack all of them at once
