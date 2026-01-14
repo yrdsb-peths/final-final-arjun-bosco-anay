@@ -353,7 +353,7 @@ public class Ninja extends Actor
     {
         // Define slash hitbox dimensions
         int slashRange = 60;  // How far the slash reaches
-        int slashWidth = 40;  // Width of the slash area
+        int slashWidth =  60;  // Width of the slash area
         
         // Get all enemies in the world as an array
         java.util.List enemiesList = getWorld().getObjects(Enemy.class);
@@ -368,6 +368,8 @@ public class Ninja extends Actor
         // Adjust hitbox based on direction
         if (facing.equals("north"))
         {
+            slashRange += 20;
+            
             hitboxX = slashX - slashWidth/2;
             hitboxY = slashY - slashRange; 
             hitboxWidth = slashWidth;

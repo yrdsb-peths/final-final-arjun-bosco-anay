@@ -72,9 +72,11 @@ public class MyWorld extends World {
         // HEAL PLAYER BASED ON FLOOR
         int healAmount = 0;
         
-        if (currentFloor <= 4) {
-            healAmount = 25;
+        if (currentFloor <= 5) {
+            healAmount = 10;
         } else if (currentFloor <= 9) {
+            healAmount = 25;
+        }else{
             healAmount = 50;
         }
         
