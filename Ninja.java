@@ -310,7 +310,7 @@ public class Ninja extends Actor
     private void checkSlashDamage()
     {
         // Define slash hitbox dimensions
-        int slashRange = 60;  // How far the slash reaches
+        int slashRange = 70;  // How far the slash reaches
         int slashWidth = 40;  // Width of the slash area
         
         // Get all enemies in the world as an array
@@ -383,6 +383,23 @@ public class Ninja extends Actor
         {
             // Tell the world to go to next floor
             ((MyWorld) getWorld()).nextFloor();
+        }
+    }
+    
+    public void heal(int amount)
+    {
+        health += amount;
+        
+        // Don't exceed max health
+        if (health > maxHealth)
+        {
+            health = maxHealth;
+        }
+        
+        // Update health bar if it exists
+        if (healthBar != null)
+        {
+            healthBar.update(health);
         }
     }
 }

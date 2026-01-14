@@ -52,7 +52,7 @@ public class MyWorld extends World {
     }
     public void nextFloor()
     {
-           if (currentFloor >= maxFloors)
+       if (currentFloor >= maxFloors)
         {
             // Game completed
             showText("You Win! All " + maxFloors + " floors cleared!", getWidth() / 2, getHeight() / 2);
@@ -69,8 +69,22 @@ public class MyWorld extends World {
         currentFloor++;
         floorLabel.setValue("Floor: " + currentFloor);
         
+         // HEAL PLAYER BASED ON FLOOR
         // Get player reference
         Ninja player = getObjects(Ninja.class).get(0);
+         int healAmount = 0;
+        
+        if (currentFloor <= 4) {
+            // Floors 1-4: Heal 25 health
+            healAmount = 25;
+        } else if (currentFloor <= 9) {
+            // Floors 5-9: Heal 50 health
+            healAmount = 50;
+        }
+        // Floor 10 doesn't heal (no next floor)
+        
+        // Apply healing to player
+        player.heal(healAmount);
         
         // Move player to bottom center
         player.setLocation(getWidth() / 2, getHeight() - 60);
@@ -98,6 +112,8 @@ public class MyWorld extends World {
             addObject(enemy, spawnX, spawnY);
         }
         
+        
+        
     }  
     public static void addKill()
     {
@@ -110,6 +126,11 @@ public class MyWorld extends World {
     public static void resetCurrentKills()
     {
         currentKills = 0;
+    }
+    
+    public int getFloorNumber()
+    {
+        return currentFloor;
     }
 }
 
