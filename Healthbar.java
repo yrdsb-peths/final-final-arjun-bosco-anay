@@ -1,33 +1,34 @@
-import greenfoot.*;  // Imports Greenfoot classes for actors, images, and colors
+import greenfoot.*;  // Imports Greenfoot classes
 
 /**
- * This class displays a health bar that visually shows
- * the current health of an object.
+ * Displays a health bar that shows current health.
  */
 public class Healthbar extends Actor
 {
-    // Maximum and current health values
+    // Health values
     private int maxHealth;
     private int health;
     
-    // Size of the health bar
+    // Health bar size
     private int width = 40;
     private int height = 6;
     
     /**
-     * Constructor that initializes health values
-     * and draws the full health bar.
+     * Creates a health bar with full health.
+     *
+     * @param maxHealth the maximum health value
      */
     public Healthbar(int maxHealth)
     {
         this.maxHealth = maxHealth;
         this.health = maxHealth;
-        updateImage(); // Draws the initial health bar
+        updateImage(); // Draws the bar
     }
     
     /**
-     * Updates the current health value
-     * and redraws the health bar.
+     * Updates the health bar value.
+     *
+     * @param health the new health value
      */
     public void update(int health)
     {
@@ -36,31 +37,25 @@ public class Healthbar extends Actor
     }
     
     /**
-     * Redraws the health bar image.
-     * Red shows max health, green shows current health.
+     * Runs each game cycle (no action needed).
      */
+    public void act()
+    {
+        
+    }
+    
+    // Redraws the health bar image
     private void updateImage()
     {
         GreenfootImage img = new GreenfootImage(width, height);
         
-        // Draw background (max health)
         img.setColor(Color.RED);
         img.fillRect(0, 0, width, height);
         
-        // Draw current health amount
         img.setColor(Color.GREEN);
         int greenWidth = (int)((double) health / maxHealth * width);
         img.fillRect(0, 0, greenWidth, height);
         
-        setImage(img); // Updates the displayed image
-    }
-    
-    /**
-     * Act method is unused since the health bar
-     * only updates when health changes.
-     */
-    public void act()
-    {
-                
+        setImage(img);
     }
 }

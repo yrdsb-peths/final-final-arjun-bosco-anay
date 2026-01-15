@@ -1,9 +1,9 @@
 import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 
 /**
- * Write a description of class GameOverScreen here.
+ * When user loses
  * 
- * @author (your name) 
+ * @author (Arjun, Bosco, Anay) 
  * @version (a version number or a date)
  */
 public class GameOverScreen extends World

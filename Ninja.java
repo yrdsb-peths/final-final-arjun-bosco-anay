@@ -65,6 +65,12 @@ public class Ninja extends Actor
     private boolean debugMode = false;
     private HitboxVisualizer debugHitbox = null;
     private boolean f2WasPressed = false; // Track if F2 was pressed last frame
+    
+    /**
+     * Constructs a Ninja object.
+     * Initializes animations and sets the default idle image.
+     */
+    
     public Ninja()
     {
         
@@ -151,6 +157,13 @@ public class Ninja extends Actor
         
         idleIndex = (idleIndex + 1) % idleNorth.length;
     }
+    
+    /**
+     * Called automatically when the Ninja is added to the world.
+     * Creates and positions the health bar above the Ninja.
+     *
+     * @param w the world the Ninja was added to
+     */
     
     public void addedToWorld(World w)
     {
@@ -455,6 +468,12 @@ public class Ninja extends Actor
             ((MyWorld) getWorld()).nextFloor();
         }
     }
+    
+     /**
+     * Heals the Ninja by a specified amount without exceeding max health.
+     *
+     * @param amount the amount of health to restore
+     */
     
     public void heal(int amount)
     {

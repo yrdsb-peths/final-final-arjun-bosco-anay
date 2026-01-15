@@ -1,33 +1,33 @@
-import greenfoot.*;  // Imports Greenfoot classes for actors, worlds, images, and input
+import greenfoot.*;  // Imports Greenfoot classes
 
 /**
- * This class creates a clickable button.
- * Each button performs a specific action when clicked.
+ * Creates a clickable button.
+ * Each button performs an action when clicked.
  */
 public class Button extends Actor
 {
     /**
-     * Stores the button’s function (start, restart, or exit).
-     * The action determines what happens when the button is clicked.
+     * Stores the button action.
      */
-    private String action; // Signals "start", "restart", or "exit"
+    private String action; // "start", "restart", or "exit"
     
     /**
-     * Constructor that creates a text-based button
-     * and assigns its action.
+     * Creates a button with text and an action.
+     *
+     * @param text the text shown on the button
+     * @param action the action when clicked
      */
     public Button(String text, String action)
     {
-        this.action = action; // Saves the assigned action
+        this.action = action; // Saves the action
         
-        // Creates the button image with transparent background
+        // Creates the button image
         GreenfootImage img = new GreenfootImage(text, 36, Color.WHITE, new Color(0, 0, 0, 0));
-        setImage(img); // Displays the button on screen
+        setImage(img); // Sets the image
     }
     
     /**
-     * Runs repeatedly to check for mouse clicks.
-     * Performs an action based on the button type.
+     * Checks for mouse clicks and performs the button action.
      */
     public void act()
     {
@@ -35,17 +35,18 @@ public class Button extends Actor
         {
             if(action.equals("start"))
             {
-                // Starting fresh from main menu - reset current kills
+                // Starts a new game
                 MyWorld.resetCurrentKills();
                 Greenfoot.setWorld(new MyWorld());
             }
             else if(action.equals("restart"))
             {
-                // Restarting after death - current kills already reset in Ninja
+                // Restarts the game
                 Greenfoot.setWorld(new MyWorld());
             }
             else if(action.equals("exit"))
             {
+                // Returns to start screen
                 Greenfoot.setWorld(new StartScreen());
             }
         }
