@@ -72,27 +72,29 @@ public class MyWorld extends World {
         // HEAL PLAYER BASED ON FLOOR
         int healAmount = 0;
         
-        if (currentFloor <= 5) {
-            healAmount = 10;
-        } else if (currentFloor <= 9) {
-            healAmount = 25;
-        }else{
-            healAmount = 50;
-        }
+        // Special: Heal to 100 HP after mini boss floors (floors 11, 21, 31, etc.)
+        boolean previousWasBossFloor = ((currentFloor - 1) % 10 == 0);
         
-         boolean previousWasBossFloor = ((currentFloor - 1) % 10 == 0);
-    
         if (previousWasBossFloor) {
-            // Player just completed a mini boss floor, heal to full
+            // Player just completed a mini boss floor, heal to full (100)
             player.healToFull();
         } else {
+            // Apply normal floor healing
+            if (currentFloor <= 3) {
+                healAmount = 10;
+            }else if (currentFloor <= 6) {
+                healAmount = 25;
+            }else if (currentFloor <= 9) {
+                healAmount = 40;
+            }else {
+                // Floors 5+ (except floors after boss floors) get 50 healing
+                healAmount = 50;
+            }
+            
             if (healAmount > 0) {
                 player.heal(healAmount);
             }
         }
-        
-        // Apply healing to player
-        player.heal(healAmount);
         
         // Move player to bottom center
         player.setLocation(getWidth() / 2, getHeight() - 60);
