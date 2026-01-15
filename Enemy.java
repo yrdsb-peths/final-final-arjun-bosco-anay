@@ -1,25 +1,24 @@
-import greenfoot.*;  // Imports Greenfoot classes for actors, images, sounds, and input
+import greenfoot.*;  // Imports Greenfoot classes
 
 /**
- * This class represents an enemy that can follow the ninja,
- * take damage, and be defeated.
+ * Represents an enemy that can follow the ninja and be defeated.
  */
 public class Enemy extends Actor
 {
-    // Movement speed of the enemy
+    // Enemy movement speed
     int speed = 1;
     
-    // Tracks whether the ninja has started moving
+    // Checks if the ninja has moved
     boolean ninjaHasMoved = false;
     
-    // Health values for the enemy
+    // Enemy health values
     private int maxHealth = 100;
     private int health = 100; 
     
-    // Health bar displayed above the enemy
+    // Health bar above the enemy
     private Healthbar healthBar;    
     
-    // Sound effects for taking damage and dying
+    // Sound effects
     private static GreenfootSound hitSound = new GreenfootSound("hurt_sound.mp3");
     private static GreenfootSound deathSound = new GreenfootSound("Death.mp3");
     
@@ -28,7 +27,7 @@ public class Enemy extends Actor
     private Label bossTitleLabel = null;
 
     /**
-     * Constructor that sets and scales the enemy image.
+     * Creates an enemy and sets its health and image.
      */
     public Enemy()
     {   
@@ -36,14 +35,12 @@ public class Enemy extends Actor
         img.scale(60, 80);
         setImage(img);
         
-        // For regular enemies, start with base health + boost
         maxHealth = 100 + MyWorld.getEnemyHealthBoost();
         health = maxHealth;
     }   
 
     /**
-     * Runs when the enemy is added to the world.
-     * Spawns the enemy away from the ninja and adds a health bar.
+     * Sets the enemy position and adds a health bar.
      */
     public void addedToWorld(World w)
     {
@@ -52,7 +49,7 @@ public class Enemy extends Actor
         int x;
         int y;
         
-        // Mini bosses spawn at top, regular enemies use normal logic
+        // Spawn position
         if (isMiniBoss)
         {
             x = w.getWidth() / 2;
@@ -60,24 +57,15 @@ public class Enemy extends Actor
         }
         else
         {
-            // Regular enemy spawning logic
             if(ninja.getX() < w.getWidth() / 2)
-            {
                 x = Greenfoot.getRandomNumber(w.getWidth() / 2) + w.getWidth() / 2;
-            }
             else
-            {
                 x = Greenfoot.getRandomNumber(w.getWidth() / 2);
-            }
             
             if(ninja.getY() < w.getHeight() / 2)
-            {
                 y = Greenfoot.getRandomNumber(w.getHeight() / 2) + w.getHeight() / 2;
-            }
             else
-            {
                 y = Greenfoot.getRandomNumber(w.getHeight() / 2);
-            }
         }
         
         healthBar = new Healthbar(maxHealth);
@@ -86,47 +74,35 @@ public class Enemy extends Actor
         setLocation(x, y);
         healthBar.setLocation(getX() - 5, getY() - 40);
         
-        // Position boss title if it exists
         if (bossTitleLabel != null)
-        {
             bossTitleLabel.setLocation(getX(), getY() - 90);
-        }
     }
 
     /**
-     * Main behavior loop.
-     * Checks movement and updates health bar position.
+     * Controls enemy movement and updates displays.
      */
     public void act()
     {
         checkIfNinjaMoved();
+        
         if (ninjaHasMoved)
-        {
             followNinja();
-        }
         
         if (healthBar != null)
-        {
             healthBar.setLocation(getX() - 5, getY() - 40);
-        }
         
-        // Update boss title position if it exists
         if (bossTitleLabel != null)
-        {
             bossTitleLabel.setLocation(getX(), getY() - 90);
-        }
     }
 
     /**
-     * Detects if the ninja has moved using keyboard input.
+     * Checks if the ninja has started moving.
      */
     public void checkIfNinjaMoved()
     {
-        Ninja ninja = getWorld().getObjects(Ninja.class).get(0);
-        
-        // Checks common movement keys
-        if (Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("a") || Greenfoot.isKeyDown("s") || 
-            Greenfoot.isKeyDown("d") || Greenfoot.isKeyDown("up") || Greenfoot.isKeyDown("down") || 
+        if (Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("a") ||
+            Greenfoot.isKeyDown("s") || Greenfoot.isKeyDown("d") ||
+            Greenfoot.isKeyDown("up") || Greenfoot.isKeyDown("down") ||
             Greenfoot.isKeyDown("left") || Greenfoot.isKeyDown("right"))
         {
             ninjaHasMoved = true;
@@ -134,7 +110,7 @@ public class Enemy extends Actor
     }
 
     /**
-     * Moves the enemy toward the ninja if close enough.
+     * Moves the enemy toward the ninja.
      */
     public void followNinja()
     {
@@ -142,21 +118,15 @@ public class Enemy extends Actor
         {
             Ninja ninja = getWorld().getObjects(Ninja.class).get(0);
             
-            // Distance between enemy and ninja
-            int distanceX = Math.abs(getX() - ninja.getX());
-            int distanceY = Math.abs(getY() - ninja.getY());
+            int dx = 0;
+            int dy = 0;
             
-            // Only follow if ninja is within range
-            if (distanceX <= 300 && distanceY <= 300)
+            if(Math.abs(getX() - ninja.getX()) <= 300 &&
+               Math.abs(getY() - ninja.getY()) <= 300)
             {
-                int dx = 0;
-                int dy = 0;
-                
-                // Horizontal movement
                 if(getX() < ninja.getX()) dx = speed;
                 else if (getX() > ninja.getX()) dx = -speed;
                 
-                // Vertical movement
                 if(getY() < ninja.getY()) dy = speed;
                 else if (getY() > ninja.getY()) dy = -speed;
                 
@@ -166,7 +136,9 @@ public class Enemy extends Actor
     }
 
     /**
-     * Reduces health when damaged and plays sound effects.
+     * Reduces enemy health when damaged.
+     *
+     * @param damage the amount of damage taken
      */
     public void takeDamage(int damage)
     {
@@ -175,78 +147,72 @@ public class Enemy extends Actor
         hitSound.stop();
         hitSound.play();
         
-        // Check for death
         if (health <= 0)
         {
             health = 0;
             die();
         }
         
-        // Update health bar display
         if (healthBar != null)
-        {
             healthBar.update(health);
-        }
     }
 
-    /**
-     * Handles enemy death and cleanup.
-     */
+    // Handles enemy death
     private void die()
     {  
         deathSound.stop();
         deathSound.play();
         
-        // Count the kill
         MyWorld.addKill();
         
-        // If this was a mini boss, increase enemy health boost
         if (isMiniBoss)
-        {
             MyWorld.increaseEnemyHealthBoost(); 
-        }
         
-        // Remove health bar first
         if (healthBar != null)
-        {
             getWorld().removeObject(healthBar);
-        }
         
-        // Remove boss title if it exists
         if (bossTitleLabel != null)
-        {
             getWorld().removeObject(bossTitleLabel);
-        }
         
-        // Then remove enemy
         getWorld().removeObject(this);
     }
 
-    // Returns current health
+    /**
+     * Returns the enemy's current health.
+     *
+     * @return the current health
+     */
     public int getHealth()
     {
         return health;
     }
 
-    // Returns maximum health
+    /**
+     * Returns the enemy's maximum health.
+     *
+     * @return the maximum health
+     */
     public int getMaxHealth()
     {
         return maxHealth;
     }
     
-    
+    /**
+     * Sets the enemy as a mini boss.
+     *
+     * @param health the mini boss health
+     * @param level the mini boss level
+     */
     public void setAsMiniBoss(int health, int level)
     {
         this.isMiniBoss = true;
         this.bossLevel = level;
-        this.maxHealth = health;  // Override the health from constructor
+        this.maxHealth = health;
         this.health = health;
         
-        // Make it larger
         GreenfootImage img = getImage();
         img.scale(80, 105); 
         
-        // Add title label
         if (getWorld() != null)
         {
             bossTitleLabel = new Label("Lvl " + level + " Mini Boss", 20);
